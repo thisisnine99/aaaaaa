@@ -45,18 +45,6 @@ public class MovieWeeklyService {
         movieWeekly.setWeek(week);
         return this.movieWeeklyRepository.save(movieWeekly);
     }
-    public void deleteWeeklyMovie(String weeks) throws ParseException {
-        String date = String.valueOf(Integer.parseInt(weeks) -7);
-        String week = weeklydate(date);
-        String year = date.substring(0,4);
-        List<MovieWeekly> movieWeeklyList = this.movieWeeklyRepository.findByYearAndWeek(year,week);
-        int i = 0;
-        while (i < movieWeeklyList.size()) {
-            this.movieWeeklyRepository.delete(movieWeeklyList.get(i));
-            i++;
-        }
-    }
-
     public List<MovieWeekly> findWeeklyMovie(String weeks) throws ParseException {
         String week = weeklydate(weeks);
         String year = weeks.substring(0,4);

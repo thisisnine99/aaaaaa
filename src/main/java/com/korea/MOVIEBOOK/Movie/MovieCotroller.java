@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 @Controller
 public class MovieCotroller {
 
-    private final MovieDailyService movieDailyService;
     private final MovieDailyAPI movieDailyAPI;
     private final MovieWeeklyService movieWeeklyService;
     private final MovieWeeklyAPI movieWeeklyAPI;
@@ -41,9 +40,10 @@ public class MovieCotroller {
         if (movieDTOS.isEmpty()) {
             List<Map> failedMovieList = this.movieDailyAPI.movieDaily(date);
             movieDailySize(failedMovieList);
-        } else if (!(movieDTOS.get(0).getYear(weeks.substring(0, 4)) && movieDTOS.get(0).getWeek(week))) {
-//            List<Map> failedMovieList2 = this.movieWeeklyAPI.movieWeekly(weeks);
-////            movieWeeklySize(failedMovieList2);
+            if (this.movieWeeklyService.findWeeklyMovie(weeks).isEmpty()) {
+                List<Map> failedMovieList2 = this.movieWeeklyAPI.movieWeekly(weeks);
+                movieWeeklySize(failedMovieList2);
+            }
         }
         LocalDateTime localDateTime = weeksago;
         Date weekdate = Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant());
@@ -72,7 +72,7 @@ public class MovieCotroller {
         return "Movie/movie";
     }
 
-//    @PostMapping("movie/detail")
+    //    @PostMapping("movie/detail")
 //    public String movieDetail(Model model, String date, String title) {
 //        MovieDaily movieDaily = this.movieDailyService.findmovie(date, title);
 //
@@ -96,10 +96,11 @@ public class MovieCotroller {
 
     public void movieWeeklySize(List<Map> failedMovieList) throws ParseException {
         if (failedMovieList != null && !failedMovieList.isEmpty()) {
-            List<Map> failedMoiveList = movieWeeklyAPI.saveWeeklyMovieDataByAPI(failedMovieList,weeks);
+            List<Map> failedMoiveList = movieWeeklyAPI.saveWeeklyMovieDataByAPI(failedMovieList, weeks);
             movieDailySize(failedMoiveList);
         }
     }
+
     public static String getCurrentWeekOfMonth(Date date) {
         Calendar calendar = Calendar.getInstance(Locale.KOREA);
         calendar.setTime(date);
