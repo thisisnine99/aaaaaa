@@ -1,5 +1,7 @@
 package com.korea.MOVIEBOOK.Movie.Weekly;
 
+import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
+import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import com.korea.MOVIEBOOK.Movie.MovieAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -23,18 +25,26 @@ import java.util.*;
 public class MovieWeeklyAPI {
     private final MovieAPI movieAPI;
     private final MovieWeeklyService movieWeeklyService;
+    private final MovieService movieService;
 
     public List<Map> saveWeeklyMovieDataByAPI(List<Map> movieList, String date) throws ParseException {
         List<Map> finalFailedMovieList = new ArrayList<>();
         Map rData = null;
         int j = 0;
         for (Map movie : movieList) {
-            rData = this.movieAPI.movieDetail(movie);  // api2 호출
-            if(rData.get("failedMovieList") != null) {
-                finalFailedMovieList.addAll((List<Map>) rData.get("failedMovieList"));
+            if(this.movieService.findMovieByCD((String) movie.get("movieCd")) == null) {
+                rData = this.movieAPI.movieDetail(movie);  // api2 호출
+                if (rData.get("failedMovieList") != null) {
+                    finalFailedMovieList.addAll((List<Map>) rData.get("failedMovieList"));
+                } else {
+                    this.movieAPI.kmdb((String) movie.get("movieNm"), (String)rData.get("releaseDateAndNationNm"));
+                    this.movieService.add((String) movie.get("movieNm"), Long.parseLong((String) movie.get("audiAcc")));
+                    MovieWeekly movieWeekly = this.movieWeeklyService.add((String) movie.get("movieCd"), Long.parseLong((String) movie.get("rank")), date);
+                    this.movieService.setMovieWeeklyID(movieWeekly,(String) movie.get("movieCd"));
+                }
             } else {
-                this.movieAPI.kmdb((String) movie.get("movieNm"), (String)rData.get("releaseDateAndNationNm"));
-                this.movieWeeklyService.add(date, Long.parseLong((String) movie.get("rank")), (String) movie.get("movieNm"), Long.parseLong((String) movie.get("audiAcc")));
+                MovieWeekly movieWeekly = this.movieWeeklyService.add((String) movie.get("movieCd"), Long.parseLong((String) movie.get("rank")), date);
+                this.movieService.setMovieWeeklyID(movieWeekly,(String) movie.get("movieCd"));
             }
             j++;
             System.out.println("=======j의값====" + j);

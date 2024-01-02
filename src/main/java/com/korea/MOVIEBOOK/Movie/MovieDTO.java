@@ -45,5 +45,18 @@ public class MovieDTO {
 
     private String imageUrl;            // 포스터 URL       - KMDb API
 
+    public boolean getYear(String year) {
+        if(this.year == null){
+            return false;
+        }
+        return this.year.equals(year);
+    }
+
+    public boolean getWeek(String week) {
+        if(this.week == null){
+            return false;
+        }
+        return this.week.equals(week);
+    }
 
 }

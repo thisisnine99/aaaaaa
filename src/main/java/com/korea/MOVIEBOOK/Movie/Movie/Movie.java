@@ -15,6 +15,8 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String movieCode;           // 영화 번호        - 영화 진흥원 API
+
     private String title;               // 영화 제목        - 영화 진흥원 API
 
     private String director;            // 영화 감독        - 영화 진흥원 API
