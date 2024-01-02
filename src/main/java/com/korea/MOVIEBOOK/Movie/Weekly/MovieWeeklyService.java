@@ -1,6 +1,8 @@
 package com.korea.MOVIEBOOK.Movie.Weekly;
 
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
+import com.korea.MOVIEBOOK.Movie.Movie.Movie;
+import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.text.ParseException;
@@ -13,6 +15,7 @@ import java.util.List;
 @Service
 public class MovieWeeklyService {
     private final MovieWeeklyRepository movieWeeklyRepository;
+    private final MovieService movieService;
 
     String dateString = "";
 
@@ -31,15 +34,17 @@ public class MovieWeeklyService {
         return weekNumber;
     }
 
-    public void add(String date, Long rank, String title, Long audiAcc) throws ParseException {
+    public MovieWeekly add(String movieCD, Long rank, String date) throws ParseException{
         String week = weeklydate(date);
         String year = date.substring(0,4);
-        MovieWeekly movieWeekly = this.movieWeeklyRepository.findByYearAndWeekAndTitle(year,week,title);
-//        movieWeekly.setRank(rank);
-//        movieWeekly.setAudiAcc(audiAcc);
-        this.movieWeeklyRepository.save(movieWeekly);
+        Movie movie = this.movieService.findMovieByCD(movieCD);
+        MovieWeekly movieWeekly = new MovieWeekly();
+        movieWeekly.setMovie(movie);
+        movieWeekly.setRank(rank);
+        movieWeekly.setYear(year);
+        movieWeekly.setWeek(week);
+        return this.movieWeeklyRepository.save(movieWeekly);
     }
-
     public void deleteWeeklyMovie(String weeks) throws ParseException {
         String date = String.valueOf(Integer.parseInt(weeks) -7);
         String week = weeklydate(date);

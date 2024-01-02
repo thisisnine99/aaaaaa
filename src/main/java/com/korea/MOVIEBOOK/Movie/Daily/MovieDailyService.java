@@ -1,7 +1,9 @@
 package com.korea.MOVIEBOOK.Movie.Daily;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
+import com.korea.MOVIEBOOK.Movie.Movie.MovieRepository;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
+import com.korea.MOVIEBOOK.Movie.MovieDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +19,15 @@ public class MovieDailyService {
     private final MovieDailyRepository movieDailyRepository;
     private final MovieService movieService;
 
-    public void add(String title, Long rank, String date){
-        Movie movie = this.movieService.findMovie(title);
+    public MovieDaily add(String movieCD, Long rank, String date){
+        Movie movie = this.movieService.findMovieByCD(movieCD);
         MovieDaily movieDaily = new MovieDaily();
         movieDaily.setMovie(movie);
         movieDaily.setRank(rank);
         movieDaily.setDate(date);
-        this.movieDailyRepository.save(movieDaily);
+        return this.movieDailyRepository.save(movieDaily);
     }
     public List<MovieDaily> findMovies(String date){
         return this.movieDailyRepository.findBydate(date);
     }
-
-
 }

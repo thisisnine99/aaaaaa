@@ -136,6 +136,7 @@ public class MovieAPI {
                     actors += ",";
                 }
             }
+            String movieCD = (String) movie.get("movieCd");
 
             String runtime = (String) detailList.get("showTm");
 
@@ -159,7 +160,7 @@ public class MovieAPI {
             String nationNm = (String) nations.get(0).get("nationNm");
 
 
-            this.movieService.findMovieList(movieNm, actors, runtime, genre, releaseDate, viewingRating, director, nationNm);
+            this.movieService.findMovieList(movieCD, movieNm, actors, runtime, genre, releaseDate, viewingRating, director, nationNm);
             rData.put("releaseDateAndNationNm", releaseDate + nationNm);
 
 

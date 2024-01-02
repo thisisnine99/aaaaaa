@@ -45,7 +45,8 @@ public class MovieDailyAPI {
             else {
                 this.movieAPI.kmdb((String) movie.get("movieNm"), (String)rData.get("releaseDateAndNationNm"));
                 this.movieService.add((String) movie.get("movieNm"), Long.parseLong((String) movie.get("audiAcc")));
-                this.movieDailyService.add((String) movie.get("movieNm"), Long.parseLong((String) movie.get("rank")), date);
+                MovieDaily movieDaily = this.movieDailyService.add((String) movie.get("movieCd"), Long.parseLong((String) movie.get("rank")), date);
+                this.movieService.test(movieDaily,(String) movie.get("movieNm"));
             }
             i++;
             System.out.println("=======i의값====" + i);
@@ -66,8 +67,8 @@ public class MovieDailyAPI {
         String key = "f53a4247c0c7eda74780f0c0b855d761";
         List<Map> finalFailedMovieList = new ArrayList<>();
         try {
-            RestTemplate restTemplate = new RestTemplate();
 
+            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders header = new HttpHeaders();
             HttpEntity<?> entity = new HttpEntity<>(header);
             String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json";
