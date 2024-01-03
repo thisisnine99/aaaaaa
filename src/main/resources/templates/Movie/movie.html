@@ -42,8 +42,7 @@
                                              th:if="${not #strings.isEmpty(movieDaily.imageUrl)}">
                                         <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movieDaily.imageUrl)}"
                                              style="width : 213px; height : 303px;">
-                                        <input type="hidden" name="title" th:value="${movieDaily.title}">
-                                        <input type="hidden" name="date" th:value="${movieDailyDate}">
+                                        <input type="hidden" name="movieCD" th:value="${movieDaily.movieCode}">
                                     </div>
                                 </button>
                             </form>
@@ -76,7 +75,128 @@
             </div>
         </div>
     </div>
+    <div class="swiper">   <!--   전주 영화 top 10  -->
+        <div style="width : 1340px; margin : auto;">
+            <div class="swiper-top" style="display : flex; white-space : nowrap;">
+                <div style="text-align : left; margin-left : 8%;">
+                    <span th:text="${movieWeeklyDate}"
+                          style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;"></span>
+                    <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;"> TOP 10</span>
+                </div>
+            </div>
+            <div class="swiper mySwiper" style="width : 85%; margin-top : 10px;">
+                <div style="margin-left : 85%; margin-top : -3px; display : flex;">
+                    <div class="swiper-pagination swiper-pagination1"
+                         style="position : relative; width : 55%; margin-top : 5px;"></div>
+                </div>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" th:each="movieWeekList : ${movieWeeklyListList}"
+                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">
+                        <div class="dailyMovie" style="display : grid;" th:each="movieWeek : ${movieWeekList}">
 
+                            <form class="title-co" th:action="@{/movie/detail}" method="post">
+                                <button>
+                                    <div class="img" style="padding : 6px;" onclick="goDetail('.title-co');">
+                                        <span class="rank" th:text="${movieWeek.weeklyRank}"></span>
+                                        <img th:src="${movieWeek.imageUrl}"
+                                             th:if="${not #strings.isEmpty(movieWeek.imageUrl)}">
+                                        <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movieWeek.imageUrl)}"
+                                             style="width : 213px; height : 303px;">
+                                        <input type="hidden" name="movieCD" th:value="${movieWeek.movieCode}">
+                                    </div>
+                                </button>
+                            </form>
+                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                                <form class="title-co">
+                                    <input class="title" name="title"
+                                           th:value="${#strings.length(movieWeek.title) > 17 ? #strings.substring(movieWeek.title, 0, 17) + '..' : movieWeek.title}"
+                                           style="font-size : 17px;" onclick="goDetail('.title-co');" readonly>
+                                    <div class="mv-text" th:text="${movieWeek.title}"></div>
+                                    <input type="hidden" name="date" th:value="${movieDailyDate}">
+                                </form>
+                                <div class="short-kind">
+                                    <span th:text="${movieWeek.genre}"
+                                          style="color : #868e96; font-size : 15px;"></span>
+                                    ·
+                                    <span th:text="${movieWeek.nations}"
+                                          style="color : #868e96; font-size : 15px;"></span>
+                                </div>
+                                <div class="short-kind">
+                                    <span style="color : #868e96; font-size : 15px;">개봉일 </span>
+                                    <span th:text="${#strings.substring(movieWeek.releaseDate, 0, 4) + '.' + #strings.substring(movieWeek.releaseDate, 4, 6) + '.' + #strings.substring(movieWeek.releaseDate, 6, 8)}"
+                                          style="color: #868e96; font-size: 15px;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-prev swiper-button-prev" style="left : 15%;  color : red;"></div>
+                <div class="swiper-button-next swiper-button-next" style="right : 15%; color : red;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="swiper">   <!--        무비부비 좋아요 영화 top 10-->
+        <div style="width : 1340px; margin : auto;">
+            <div class="swiper-top" style="display : flex; white-space : nowrap;">
+                <div style="text-align : left; margin-left : 8%;">
+                    <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;">무비부비 좋아요 TOP 10</span>
+                </div>
+            </div>
+            <div class="swiper mySwiper" style="width : 85%; margin-top : 10px;">
+                <div style="margin-left : 85%; margin-top : -3px; display : flex;">
+                    <div>
+                        <span th:text="${#strings.substring(movieDailyDate, 4, 6) + '.' + #strings.substring(movieDailyDate, 6, 8)}"
+                              style="color : #868e96; font-size : 15px;"></span>
+                        <span style="color : #868e96; font-size : 15px;">기준</span>
+                    </div>
+                    <div class="swiper-pagination swiper-pagination1"
+                         style="position : relative; width : 55%; margin-top : 5px;"></div>
+                </div>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" th:each="movieDailyList : ${movieListList}"
+                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">
+                        <div class="dailyMovie" style="display : grid;" th:each="movieDaily : ${movieDailyList}">
+                            <form class="title-co" th:action="@{/movie/detail}" method="post">
+                                <button>
+                                    <div class="img" style="padding : 6px;" onclick="goDetail('.title-co');">
+                                        <span class="rank" th:text="${movieDaily.dailyRank}"></span>
+                                        <img th:src="${movieDaily.imageUrl}"
+                                             th:if="${not #strings.isEmpty(movieDaily.imageUrl)}">
+                                        <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movieDaily.imageUrl)}"
+                                             style="width : 213px; height : 303px;">
+                                        <input type="hidden" name="movieCD" th:value="${movieDaily.movieCode}">
+                                    </div>
+                                </button>
+                            </form>
+                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                                <form class="title-co">
+                                    <input class="title" name="title"
+                                           th:value="${#strings.length(movieDaily.title) > 17 ? #strings.substring(movieDaily.title, 0, 17) + '..' : movieDaily.title}"
+                                           style="font-size : 17px;" onclick="goDetail('.title-co');" readonly>
+                                    <div class="mv-text" th:text="${movieDaily.title}"></div>
+                                    <input type="hidden" name="date" th:value="${movieDailyDate}">
+                                </form>
+                                <div class="short-kind">
+                                    <span th:text="${movieDaily.genre}"
+                                          style="color : #868e96; font-size : 15px;"></span>
+                                    ·
+                                    <span th:text="${movieDaily.nations}"
+                                          style="color : #868e96; font-size : 15px;"></span>
+                                </div>
+                                <div class="short-kind">
+                                    <span style="color : #868e96; font-size : 15px;">개봉일 </span>
+                                    <span th:text="${#strings.substring(movieDaily.releaseDate, 0, 4) + '.' + #strings.substring(movieDaily.releaseDate, 4, 6) + '.' + #strings.substring(movieDaily.releaseDate, 6, 8)}"
+                                          style="color: #868e96; font-size: 15px;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-prev swiper-button-prev" style="left : 15%;  color : red;"></div>
+                <div class="swiper-button-next swiper-button-next" style="right : 15%; color : red;"></div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
 

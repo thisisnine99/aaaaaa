@@ -5,6 +5,8 @@ import com.korea.MOVIEBOOK.Movie.Daily.MovieDailyAPI;
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDailyRepository;
 import com.korea.MOVIEBOOK.Movie.MovieDTO;
 import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeekly;
+import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeeklyRepository;
+import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeeklyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class MovieService {
 
     final private MovieRepository movieRepository;
     final private MovieDailyRepository movieDailyRepository;
+    final private MovieWeeklyRepository movieWeeklyRepository;
     String dateString = "";
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
     String date = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -30,10 +33,10 @@ public class MovieService {
     public void findMovieList(String movieCD,String movieNm, String actorText, String runtime, String genre, String releaseDate, String viewingRating, String director, String nations){
         Movie movie = this.movieRepository.findByTitleAndNationsAndReleaseDate(movieNm, nations, releaseDate);
         if(movie == null){
-            addDeail(movieCD, movieNm, actorText, runtime, genre, releaseDate, viewingRating, director, nations);
+            addDetail(movieCD, movieNm, actorText, runtime, genre, releaseDate, viewingRating, director, nations);
         }
     }
-    public void addDeail(String movieCD, String movieNm, String actorText, String runtime, String genre, String releaseDate, String viewingRating, String director, String nations) {
+    public void addDetail(String movieCD, String movieNm, String actorText, String runtime, String genre, String releaseDate, String viewingRating, String director, String nations) {
         Movie movie = new Movie();
         movie.setActor(actorText);
         movie.setRuntime(runtime);
@@ -94,6 +97,7 @@ public class MovieService {
         for(MovieDaily movieDaily1 : movieDaily)
         {
             MovieDTO movieDTO= MovieDTO.builder()
+                    .movieCode(movieDaily1.getMovie().getMovieCode())
                     .dailyRank(movieDaily1.getRank())
                     .date(movieDaily1.getDate())
                     .title(movieDaily1.getMovie().getTitle())
@@ -113,6 +117,40 @@ public class MovieService {
         }
         return movieDTOS;
     }
+
+    public  List<MovieDTO> listOfMovieWeeklyDTO(String weeks) throws ParseException {
+        String week = weeklydate(weeks);
+        String year = weeks.substring(0,4);
+        List<MovieWeekly> movieWeeklyList = this.movieWeeklyRepository.findByYearAndWeek(year,week);
+        return setMovieWeeklyDTO(movieWeeklyList);
+    }
+    public List<MovieDTO> setMovieWeeklyDTO(List<MovieWeekly> movieWeeklies){
+        List<MovieDTO> movieDTOS2 = new ArrayList<>();
+        for(MovieWeekly movieWeekly : movieWeeklies)
+        {
+            MovieDTO movieDTO= MovieDTO.builder()
+                    .movieCode(movieWeekly.getMovie().getMovieCode())
+                    .weeklyRank(movieWeekly.getRank())
+                    .year(movieWeekly.getYear())
+                    .week(movieWeekly.getWeek())
+                    .title(movieWeekly.getMovie().getTitle())
+                    .director(movieWeekly.getMovie().getDirector())
+                    .actor(movieWeekly.getMovie().getActor())
+                    .runtime(movieWeekly.getMovie().getRuntime())
+                    .plot(movieWeekly.getMovie().getPlot())
+                    .genre(movieWeekly.getMovie().getGenre())
+                    .releaseDate(movieWeekly.getMovie().getReleaseDate())
+                    .company(movieWeekly.getMovie().getCompany())
+                    .nations(movieWeekly.getMovie().getNations())
+                    .audiAcc(movieWeekly.getMovie().getAudiAcc())
+                    .viewingRating(movieWeekly.getMovie().getViewingRating())
+                    .imageUrl(movieWeekly.getMovie().getImageUrl())
+                    .build();
+            movieDTOS2.add(movieDTO);
+        }
+        return movieDTOS2;
+    }
+
     public void test(MovieDaily movieDaily, String title){
         Movie movie = this.movieRepository.findByTitle(title);
         movie.setMoviedaily(movieDaily);

@@ -5,11 +5,13 @@
     <link rel="stylesheet" type="text/css" th:href="@{/Movie/movieDetail.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
     <div class="content-co" style="width : 1300px; height : 1540px; margin : auto; margin-top : -25px;">
-        <div class="post-co" style="width : 100%; display : flex; margin-top : 50px;">
+        <div class="post-co" style="  width : 100%; display : flex; margin-top : 50px;">
             <div class="img-co" style="width : 260px;">
                 <img th:src="${movieDailyDetail.imageUrl}" style="width : 260px;">
             </div>
@@ -17,44 +19,64 @@
                 <div style="display : flex;">
                     <div style="flex-direction : column;">
                         <div class="rate" style="margin-top : 15px;">
-                            <input type="radio" id="rating10" name="rating" value="10"><label for="rating10" title="5점"></label>
-                            <input type="radio" id="rating9" name="rating" value="9"><label class="half" for="rating9" title="4.5점"></label>
-                            <input type="radio" id="rating8" name="rating" value="8"><label for="rating8" title="4점"></label>
-                            <input type="radio" id="rating7" name="rating" value="7"><label class="half" for="rating7" title="3.5점"></label>
-                            <input type="radio" id="rating6" name="rating" value="6"><label for="rating6" title="3점"></label>
-                            <input type="radio" id="rating5" name="rating" value="5"><label class="half" for="rating5" title="2.5점"></label>
-                            <input type="radio" id="rating4" name="rating" value="4"><label for="rating4" title="2점"></label>
-                            <input type="radio" id="rating3" name="rating" value="3"><label class="half" for="rating3" title="1.5점"></label>
-                            <input type="radio" id="rating2" name="rating" value="2"><label for="rating2" title="1점"></label>
-                            <input type="radio" id="rating1" name="rating" value="1"><label class="half" for="rating1" title="0.5점"></label>
+                            <input type="radio" id="rating10" name="rating" value="10"><label for="rating10"
+                                                                                              title="5점"></label>
+                            <input type="radio" id="rating9" name="rating" value="9"><label class="half" for="rating9"
+                                                                                            title="4.5점"></label>
+                            <input type="radio" id="rating8" name="rating" value="8"><label for="rating8"
+                                                                                            title="4점"></label>
+                            <input type="radio" id="rating7" name="rating" value="7"><label class="half" for="rating7"
+                                                                                            title="3.5점"></label>
+                            <input type="radio" id="rating6" name="rating" value="6"><label for="rating6"
+                                                                                            title="3점"></label>
+                            <input type="radio" id="rating5" name="rating" value="5"><label class="half" for="rating5"
+                                                                                            title="2.5점"></label>
+                            <input type="radio" id="rating4" name="rating" value="4"><label for="rating4"
+                                                                                            title="2점"></label>
+                            <input type="radio" id="rating3" name="rating" value="3"><label class="half" for="rating3"
+                                                                                            title="1.5점"></label>
+                            <input type="radio" id="rating2" name="rating" value="2"><label for="rating2"
+                                                                                            title="1점"></label>
+                            <input type="radio" id="rating1" name="rating" value="1"><label class="half" for="rating1"
+                                                                                            title="0.5점"></label>
                         </div>
                         <p style="margin-top : -9px; text-align : center; color : #868e96; font-weight : bold;">평가하기</p>
                     </div>
-                    <div class="event-co" style="display : flex; margin-left : 70px; margin-top : 33px; color : #868e96; font-weight : bold;">
-                        <form class="writing-co" style="margin-right : 50px;" th:action="@{/review/create}" method="post">
-                            <button>
-                            <img class="writing" src="/imgs/writing.png" style="width : 40px; height : 40px; ">
+                    <div class="event-co"
+                         style="display : flex; margin-left : 70px; margin-top : 33px; color : #868e96; font-weight : bold;">
+                        <button style="margin-right : 50px;">
+                            <img class="btn-show-popup-1" src="/imgs/writing.png" style="width : 40px; height : 40px; ">
                             <p style="margin-top : 15px;">코멘트</p>
-                            </button>
-                        </form>
+                        </button>
+                        <div class="popup-box-1 popup-box-type-a" id = "myModal" style="display : flex;">
+                            <div class="popup">
+                                <div class="head" style="display : flex;">
+                                    <span th:text="${movieDailyDetail.title}"
+                                          style="font-size : 16px; width : 90%; font-weight : bold; color : black; margin-bottom : 8px;"></span>
+                                    <button class="btn-close"></button>
+                                </div>
+                                <textarea class="body"
+                                          style="width : 100%; height : 87%;" > </textarea>
+                                <button class="btn" onclick="saveComment();"><span>저장</span></button>
+                            </div>
+                        </div>
                         <div class="like-co" style="margin-right : 50px;">
                             <img class="likeit" src="/imgs/likeit.png" style="width : 40px; height : 40px; ">
                             <p style="margin-top : 15px;">좋아요</p>
                         </div>
                         <div class="down-co">
-                            <img class="down" src="/imgs/buy.png" style="width : 40px; height : 40px; margin-left : 7px;">
+                            <img class="down" src="/imgs/buy.png"
+                                 style="width : 40px; height : 40px; margin-left : 7px;">
                             <p style="margin-top : 15px;">구매하기</p>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <textarea></textarea>
                 </div>
             </div>
         </div>
         <div class="movie-info">
             <div style="width : 100%; margin-top : 10px; color : #868e96;">
-                <span th:text="${movieDailyDetail.title}" style="font-size : 40px; font-weight : bold;  margin-bottom : 5px;"></span>
+                <span th:text="${movieDailyDetail.title}"
+                      style="font-size : 40px; font-weight : bold;  margin-bottom : 5px;"></span>
                 <span th:text="${movieDailyDetail.genre}" style="margin-left : 5px;"></span>
                 ·
                 <span th:text="${movieDailyDetail.nations}"></span>
@@ -63,19 +85,34 @@
                 (
                 <span th:text="${movieruntime}"></span>
                 )
-                <div class="movie-co" style="text-align : center; border : 3px dashed #868e96; padding : 20px; height : 140px;">
+                <div class="movie-co"
+                     style="text-align : center; border : 3px dashed #868e96; padding : 20px; height : 140px;">
                     <span th:text="${#strings.length(movieDailyDetail.plot)> 300 ? #strings.substring(movieDailyDetail.plot, 0, 300) + '..' : movieDailyDetail.plot}"></span>
                 </div>
             </div>
         </div>
-        <div class="movie-comment" style="background : skyblue;">
 
-        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
+        $('.btn-show-popup-1').click(function() {
+            $('html').addClass('popup-1-active');
+            $('textarea.body').focus();
+        });
 
 
+        $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function() {
+            $('html').removeClass('popup-1-active');
+        });
+
+
+        $('.popup-box-1 > .popup').click(function(e) {
+            e.stopPropagation();
+        });
+
+        function saveComment(){
+
+        }
     </script>
 </div>
 </body>
