@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.Movie;
 
+import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDailyAPI;
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDailyService;
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
@@ -11,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 import java.text.ParseException;
@@ -31,23 +35,29 @@ public class MovieCotroller {
     LocalDateTime weeksago = LocalDateTime.now().minusDays(7);
     String weeks = weeksago.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
+    LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
+
+    // LocalDate를 Date로 변환
+    Date oneWeekAgoDate = Date.from(oneWeekAgo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
     @GetMapping("movie")
     public String movie(Model model) throws ParseException {
 
         List<MovieDTO> movieDTOS = this.movieService.listOfMovieDailyDTO();
-        String week = this.movieWeeklyService.weeklydate(String.valueOf(weeksago));
 
         if (movieDTOS.isEmpty()) {
             List<Map> failedMovieList = this.movieDailyAPI.movieDaily(date);
             movieDailySize(failedMovieList);
+            this.movieService.listOfMovieDailyDTO();
             if (this.movieWeeklyService.findWeeklyMovie(weeks).isEmpty()) {
                 List<Map> failedMovieList2 = this.movieWeeklyAPI.movieWeekly(weeks);
                 movieWeeklySize(failedMovieList2);
+                this.movieService.listOfMovieWeeklyDTO(weeks);
             }
         }
-        LocalDateTime localDateTime = weeksago;
-        Date weekdate = Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant());
 
+        movieDTOS = this.movieService.listOfMovieDailyDTO();
         List<List<MovieDTO>> movieListList = new ArrayList<>();
 
         Integer startIndex = 0;
@@ -63,30 +73,45 @@ public class MovieCotroller {
             movieList.sort(new MovieDTOComparator());
         }
 
+        List<MovieDTO> movieDTOS2 = this.movieService.listOfMovieWeeklyDTO(weeks);
+        List<List<MovieDTO>> movieWeeklyListList = new ArrayList<>();
+
+        startIndex = 0;
+        endIndex = 5;
+
+        for (int i = 0; i < movieDTOS2.size() / 5; i++) {
+            movieWeeklyListList.add(movieDTOS2.subList(startIndex, Math.min(endIndex, movieDTOS2.size())));
+            startIndex += 5;
+            endIndex += 5;
+        }
+
+
+        String weekInfo = getCurrentWeekOfMonth(oneWeekAgoDate);
+
         model.addAttribute("movieDailyDate", date);
         model.addAttribute("movieListList", movieListList);
-        model.addAttribute("movieWeeklyDate", week);
-//        model.addAttribute("movieWeekListList", movieWeekListList);
-
+        model.addAttribute("movieWeeklyDate", weekInfo);
+        model.addAttribute("movieWeeklyListList", movieWeeklyListList);
 
         return "Movie/movie";
     }
 
-    //    @PostMapping("movie/detail")
-//    public String movieDetail(Model model, String date, String title) {
-//        MovieDaily movieDaily = this.movieDailyService.findmovie(date, title);
-//
-//        Integer runtime = Integer.valueOf(movieDaily.getRuntime());
-//        Integer hour = (int) Math.floor((double) runtime / 60);
-//        Integer minutes = runtime % 60;
-//        String movieruntime = String.valueOf(hour) + "시간" + String.valueOf(minutes) + "분";
-//
-//        model.addAttribute("movieDailyDetail", movieDaily);
-//        model.addAttribute("movieruntime", movieruntime);
-//
-//        return "Movie/movie_detail";
-//    }
-//
+    @PostMapping("movie/detail")
+    public String movieDetail(Model model, String movieCD) {
+        Movie movie = this.movieService.findMovieByCD(movieCD);
+
+        Integer runtime = Integer.valueOf(movie.getRuntime());
+        Integer hour = (int) Math.floor((double) runtime / 60);
+        Integer minutes = runtime % 60;
+        String movieruntime = String.valueOf(hour) + "시간" + String.valueOf(minutes) + "분";
+
+        model.addAttribute("movieDailyDetail", movie);
+        model.addAttribute("movieruntime", movieruntime);
+
+        return "Movie/movie_detail";
+    }
+
+    //
     public void movieDailySize(List<Map> failedMovieList) {
         if (failedMovieList != null && !failedMovieList.isEmpty()) {
             List<Map> failedMoiveList = movieDailyAPI.saveDailyMovieDataByAPI(failedMovieList);
