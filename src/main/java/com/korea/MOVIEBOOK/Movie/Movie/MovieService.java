@@ -17,13 +17,14 @@ public class MovieService {
     final private MovieRepository movieRepository;
     String dateString = "";
 
-    public void findMovieList(String movieNm, String actorText, String runtime, String genre, String releaseDate, String viewingRating, String director, String nations){
+    public void findMovieList(String movieNm, String actorText, String runtime, String genre, String releaseDate,
+                              String viewingRating, String director, String nations) {
         Movie movie = this.movieRepository.findByTitleAndNationsAndReleaseDate(movieNm, nations, releaseDate);
         if(movie == null){
-            addDeail(movieNm, actorText, runtime, genre, releaseDate, viewingRating, director, nations);
+            addDetail(movieNm, actorText, runtime, genre, releaseDate, viewingRating, director, nations);
         }
     }
-    public void addDeail(String movieNm, String actorText, String runtime, String genre, String releaseDate, String viewingRating, String director, String nations) {
+    public void addDetail(String movieNm, String actorText, String runtime, String genre, String releaseDate, String viewingRating, String director, String nations) {
         Movie movie = new Movie();
         movie.setActor(actorText);
         movie.setRuntime(runtime);

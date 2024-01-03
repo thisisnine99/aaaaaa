@@ -1,8 +1,5 @@
 package com.korea.MOVIEBOOK.Movie.Daily;
 
-import be.atbash.json.JSONObject;
-import be.atbash.json.parser.JSONParser;
-import com.korea.MOVIEBOOK.Movie.Movie.Movie;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import com.korea.MOVIEBOOK.Movie.MovieAPI;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -66,14 +57,13 @@ public class MovieDailyAPI {
     }
 
 
-    public void movieDaily() {
+    public void movieDaily(String url) {
         try {
-            String key = "f53a4247c0c7eda74780f0c0b855d761";
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders header = new HttpHeaders();
             HttpEntity<?> entity = new HttpEntity<>(header);
 
-            String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=";
+            String key = "f53a4247c0c7eda74780f0c0b855d761";
             URL uri = new URL(url + key + "&targetDt=" + "20231228");
 
             ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
@@ -90,5 +80,10 @@ public class MovieDailyAPI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void getMovieDaily() {
+        String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=";
+        movieDaily(url);
     }
 }

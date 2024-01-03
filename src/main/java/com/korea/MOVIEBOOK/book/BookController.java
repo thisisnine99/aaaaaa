@@ -48,7 +48,7 @@ public class BookController {
     @PostMapping("/detail")
     public String detailPage(String title, Model model) {
         model.addAttribute("title", title);
-        movieDailyAPI.movieDaily();
+//        movieDailyAPI.movieDaily();
         return "book/testtest";
     }
 }

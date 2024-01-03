@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -163,17 +164,39 @@ public class MovieAPI {
             rData.put("releaseDateAndNationNm", releaseDate + nationNm);
 
 
-
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            result.put("statusCode", e.getRawStatusCode());
-            result.put("body", e.getStatusText());
-            System.out.println(e.toString());
-
         } catch (Exception e) {
-            result.put("statusCode", "999");
-            result.put("body", "excpetion오류");
-            System.out.println(e.toString());
         }
         return rData;
+    }
+
+    public void movieDaily(String key, String url) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders header = new HttpHeaders();
+            HttpEntity<?> entity = new HttpEntity<>(header);
+
+            URL uri = new URL(url + key + "&targetDt=" + "20231228");
+
+            ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
+            Map ApiResult = (LinkedHashMap) resultMap.getBody().get("boxOfficeResult");
+            if (ApiResult == null) {
+
+            }
+            List<Map> dailyBoxOfficeList = (ArrayList<Map>) ApiResult.get("dailyBoxOfficeList");
+            for (Map<String, Object> dailyBoxOffice : dailyBoxOfficeList) {
+                System.out.println("영화제목============>" + dailyBoxOffice.get("movieNm"));
+            }
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getMovieDaily() {
+        String key = "f53a4247c0c7eda74780f0c0b855d761";
+        String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=";
+        movieDaily(key, url);
     }
 }

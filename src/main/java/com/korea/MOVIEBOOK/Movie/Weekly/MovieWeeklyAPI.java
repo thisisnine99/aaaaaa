@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,48 +47,37 @@ public class MovieWeeklyAPI {
         System.out.println("failedSize : " + finalFailedMovieList.size());
         return finalFailedMovieList;
     }
-    public List<Map> movieWeekly(String date) {
 
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        String key = "f53a4247c0c7eda74780f0c0b855d761";
-        Map rData = null;
-        List<Map> finalFailedMovieList = new ArrayList<>();
-
+    public void movieWeekly(URL uri, String date) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-
             HttpHeaders header = new HttpHeaders();
             HttpEntity<?> entity = new HttpEntity<>(header);
-            String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json";
 
-            UriComponents uri = UriComponentsBuilder.fromHttpUrl(url + "?" + "key=" + key + "&targetDt=" + date + "&weekGb=0").build();
-            //  기본url에 weelky가 붙어있으므로 넣은 date를 기준으로 들어가있는 해당 주의 탑 10영화.
-//            ResponseEntity<String> df = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, String.class);
-
-            //이 한줄의 코드로 API를 호출해 MAP타입으로 전달 받는다.
             ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
-            result.put("statusCode", resultMap.getStatusCodeValue()); //http status code를 확인
-            result.put("header", resultMap.getHeaders()); //헤더 정보 확인
-            result.put("body", resultMap.getBody()); //실제 데이터 정보 확인
+            Map boxOfficeResult = (LinkedHashMap) resultMap.getBody().get("boxOfficeResult");
+            if (boxOfficeResult == null) {
 
-            LinkedHashMap wm = (LinkedHashMap) resultMap.getBody().get("boxOfficeResult");
-            ArrayList<Map> dboxoffList = (ArrayList<Map>) wm.get("weeklyBoxOfficeList");
-
-            if (dboxoffList.size() < 10) {
-                movieWeekly(date);
             }
-            finalFailedMovieList = saveWeeklyMovieDataByAPI(dboxoffList, date);
-
+            List<Map> weeklyBoxOfficeList = (ArrayList<Map>) boxOfficeResult.get("weeklyBoxOfficeList");
+            for (Map<String, Object>weeklyBoxOffice : weeklyBoxOfficeList) {
+                System.out.println("영화제목============>" + weeklyBoxOffice.get("movieNm"));
+            }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            result.put("statusCode", e.getRawStatusCode());
-            result.put("body", e.getStatusText());
-            System.out.println(e.toString());
-
+            e.printStackTrace();
         } catch (Exception e) {
-            result.put("statusCode", "999");
-            result.put("body", "excpetion오류");
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
-        return finalFailedMovieList;
+    }
+
+    public void getMovieWeekly(String date) {
+        String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json?key=";
+        String key = "f53a4247c0c7eda74780f0c0b855d761";
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(url + key + "&targetDt=" + date + "&weekGb=0").build();
+    }
+
+    public void getMovieDaily() {
+        String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=";
+//        movieDaily(url);
     }
 }
