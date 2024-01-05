@@ -1,4 +1,4 @@
-package com.korea.MOVIEBOOK.Movie;
+package com.korea.MOVIEBOOK.Movie.Movie;
 
 import jakarta.persistence.Column;
 import lombok.Builder;
@@ -18,6 +18,8 @@ public class MovieDTO {
     private Long dailyRank;
 
     private Long weeklyRank;
+
+    private String movieCode;           // 영화 번호        - 영화 진흥원 API
 
     private String title;               // 영화 제목        - 영화 진흥원 API
 
@@ -45,5 +47,18 @@ public class MovieDTO {
 
     private String imageUrl;            // 포스터 URL       - KMDb API
 
+    public boolean getYear(String year) {
+        if(this.year == null){
+            return false;
+        }
+        return this.year.equals(year);
+    }
+
+    public boolean getWeek(String week) {
+        if(this.week == null){
+            return false;
+        }
+        return this.week.equals(week);
+    }
 
 }

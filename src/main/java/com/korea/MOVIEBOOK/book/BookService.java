@@ -173,4 +173,7 @@ public class BookService {
         LocalDate pubDate = LocalDate.parse(dateString, formatter);
         return pubDate;
     }
+    public Book findByTitle(String title) {
+        return bookRepository.findByTitle(title);
+    }
 }
