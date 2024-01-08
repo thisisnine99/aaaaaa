@@ -21,6 +21,6 @@ public class MovieWeekly {
 
     private Long rank;                  // 순위             - 영화 진흥원 API
 
-    @OneToOne
+    @OneToOne(mappedBy = "movieweekly")
     private Movie movie;
 }

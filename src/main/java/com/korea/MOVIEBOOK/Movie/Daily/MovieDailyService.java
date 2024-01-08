@@ -61,13 +61,19 @@ public class MovieDailyService {
     public void add(List<Map> dailyBoxOfficeList) {
         for (Map<String, Object> boxOffice : dailyBoxOfficeList) {
             MovieDaily movieDaily = new MovieDaily();
+            Movie movie = movieRepository.findBymovieCode((String) boxOffice.get("movieCd"));
             movieDaily.setDate(date);
             movieDaily.setRank(Long.parseLong((String) boxOffice.get("rank")));
-            movieDaily.setMovie(movieRepository.findBymovieCode((String) boxOffice.get("movieCd")));
+            movieDaily.setMovie(movie);
             movieDailyRepository.save(movieDaily);
             System.out.println("=========================================실행되는지 확인데일리");
-            System.out.println(movieRepository.findBymovieCode((String) boxOffice.get("movieCd")).getTitle());
+            System.out.println(movie.getTitle());
         }
+    }
+
+    public void test() {
+        System.out.println(movieDailyRepository.findAll().get(0).getMovie().getId());
+        System.out.println(movieDailyRepository.findAll().get(0).getMovie().getTitle());
     }
 
 //    public List<Map> saveDailyMovieDataByAPI(List<Map> movieList, String date) {

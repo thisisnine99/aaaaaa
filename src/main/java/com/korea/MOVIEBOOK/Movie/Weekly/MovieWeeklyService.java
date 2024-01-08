@@ -71,7 +71,6 @@ public class MovieWeeklyService {
             movieWeekly.setWeek(week);
             movieWeekly.setRank(Long.parseLong((String) boxOffice.get("rank")));
             movieWeekly.setMovie(movieRepository.findBymovieCode((String) boxOffice.get("movieCd")));
-            System.out.println("=========================================실행되는지 확인위클리");
             movieWeeklyRepository.save(movieWeekly);
         }
     }

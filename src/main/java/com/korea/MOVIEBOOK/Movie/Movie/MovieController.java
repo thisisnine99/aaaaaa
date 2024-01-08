@@ -63,6 +63,10 @@ public class MovieController {
         }
         //  위클리리스트
 
+        System.out.println("=============== 확인용");
+        movieDailyService.test();
+        System.out.println("=============== 확인용");
+
         model.addAttribute("movieDailyDate", date);
         model.addAttribute("movieListList", movieListList);
         model.addAttribute("movieWeeklyDate", weekInfo);

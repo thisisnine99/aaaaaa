@@ -43,10 +43,10 @@ public class Movie {
 
     private String imageUrl;            // 포스터 URL       - KMDb API
 
-    @OneToOne(mappedBy = "movie")
+    @OneToOne
     private MovieDaily moviedaily;
 
-    @OneToOne(mappedBy = "movie")
+    @OneToOne
     private MovieWeekly movieweekly;
 
 }

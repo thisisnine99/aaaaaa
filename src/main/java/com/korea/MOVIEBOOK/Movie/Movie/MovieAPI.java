@@ -36,10 +36,6 @@ public class MovieAPI {
                 boxOfficeList = (ArrayList<Map>) boxOfficeResult.get("dailyBoxOfficeList");
             }
 
-            for (Map<String, Object> BoxOffice : boxOfficeList) {
-                System.out.println("영화제목============>" + BoxOffice.get("movieNm"));
-            }
-
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             e.printStackTrace();
         } catch (Exception e) {
